@@ -34,6 +34,7 @@ const (
 	defEnabledIS = true
 	defEnabledIP = true
 	defEnabledPH = true
+	defEnabledGA = true
 
 	defTelegramToken    = ""
 	defTelegramChannel  = ""
@@ -48,6 +49,8 @@ const (
 	defMastodonClientKey     = ""
 	defMastodonClientSecret  = ""
 	defMastodonAccessToken   = ""
+	defMastodonCW            = false
+	defMastodonCWText        = "Wayback archive links"
 	defTwitterConsumerKey    = ""
 	defTwitterConsumerSecret = ""
 	defTwitterAccessToken    = ""
@@ -177,6 +180,8 @@ type mastodon struct {
 	clientKey    string
 	clientSecret string
 	accessToken  string
+	cw           bool
+	cwText       string
 }
 
 type discord struct {
@@ -282,6 +287,7 @@ func NewOptions() *Options {
 			SLOT_IS: defEnabledIS,
 			SLOT_IP: defEnabledIP,
 			SLOT_PH: defEnabledPH,
+			SLOT_GA: defEnabledGA,
 		},
 		telegram: &telegram{
 			token:    defTelegramToken,
@@ -293,6 +299,8 @@ func NewOptions() *Options {
 			clientKey:    defMastodonClientKey,
 			clientSecret: defMastodonClientSecret,
 			accessToken:  defMastodonAccessToken,
+			cw:           defMastodonCW,
+			cwText:       defMastodonCWText,
 		},
 		discord: &discord{
 			appID:    defDiscordBotToken,
@@ -519,7 +527,7 @@ func (o *Options) MastodonClientKey() string {
 	return o.mastodon.clientKey
 }
 
-// MastodonClientSecret returns the cilent secret of Mastodon application.
+// MastodonClientSecret returns the client secret of Mastodon application.
 func (o *Options) MastodonClientSecret() string {
 	return o.mastodon.clientSecret
 }
@@ -527,6 +535,19 @@ func (o *Options) MastodonClientSecret() string {
 // MastodonAccessToken returns the access token of Mastodon application.
 func (o *Options) MastodonAccessToken() string {
 	return o.mastodon.accessToken
+}
+
+// MastodonCW returns whether to enable content warning for publish to Mastodon.
+func (o *Options) MastodonCW() bool {
+	return o.mastodon.cw
+}
+
+// MastodonCWText returns the CW text for publish to Mastodon.
+func (o *Options) MastodonCWText() string {
+	if o.MastodonCW() {
+		return o.mastodon.cwText
+	}
+	return ""
 }
 
 // PublishToMastodon returns whether to publish result to Mastodon.
